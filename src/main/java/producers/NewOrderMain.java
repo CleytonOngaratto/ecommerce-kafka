@@ -9,6 +9,7 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 //produtor
@@ -19,13 +20,14 @@ public class NewOrderMain {
         var producerFraud = new KafkaProducer<String, Boolean>(propertiesForFraud());
         var producerEmail = new KafkaProducer<String, String>(propertiesForEmail());
 
-        var key = "Cleyton Ongaratto de Sousa,05,28";
-        var fraudRecord = new ProducerRecord<String, Boolean>("ECOMMERCE_RECORD_ORDER",key, true);
-        var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", key, "dummyValueEmail");
+        for (int i = 0; i < 10; i++) {
+            var key = UUID.randomUUID().toString();
+            var fraudRecord = new ProducerRecord<String, Boolean>("ECOMMERCE_RECORD_ORDER", key, true);
+            var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", key, "dummyValueEmail");
 
-        producerFraud.send(fraudRecord, getCallback()).get();
-        producerEmail.send(emailRecord, getCallback()).get();
-
+            producerFraud.send(fraudRecord, getCallback()).get();
+            producerEmail.send(emailRecord, getCallback()).get();
+        }
     }
 
     private static Callback getCallback() {
@@ -46,6 +48,7 @@ public class NewOrderMain {
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         return properties;
     }
+
     private static Properties propertiesForFraud() {
         var properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
