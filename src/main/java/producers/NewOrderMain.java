@@ -20,8 +20,8 @@ public class NewOrderMain {
         var producerEmail = new KafkaProducer<String, String>(propertiesForEmail());
 
         var key = "Cleyton Ongaratto de Sousa,05,28";
-        var fraudRecord = new ProducerRecord<String, Boolean>("ECOMMERCE_RECORD_ORDER",key, false);
-        var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", key, "dummyValueFraud");
+        var fraudRecord = new ProducerRecord<String, Boolean>("ECOMMERCE_RECORD_ORDER",key, true);
+        var emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", key, "dummyValueEmail");
 
         producerFraud.send(fraudRecord, getCallback()).get();
         producerEmail.send(emailRecord, getCallback()).get();
